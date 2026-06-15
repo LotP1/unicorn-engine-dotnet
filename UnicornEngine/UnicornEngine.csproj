@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Binding\" />
-    <Folder Include="Const\" />
   </ItemGroup>
 
 </Project>
