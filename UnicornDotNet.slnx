@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="TestApp/TestApp.csproj" />
+  <Project Path="UnicornEngine.Generator/UnicornEngine.Generator.csproj" />
   <Project Path="UnicornEngine/UnicornEngine.csproj" />
 </Solution>
