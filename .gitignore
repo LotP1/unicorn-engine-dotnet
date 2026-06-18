@@ -1,10 +1,10 @@
 /.vs
-/UnicornEngine/obj
 /.idea
+/UnicornEngine/bin
+/UnicornEngine/obj
+/UnicornEngine/runtimes
 /UnicornEngine.Generator/bin
 /UnicornEngine.Generator/obj
-/UnicornEngine/bin
 /TestApp
-/UnicornEngine/runtimes
 
 UnicornDotNet.sln.DotSettings.user
