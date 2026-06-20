@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 
@@ -34,18 +33,9 @@ public class SourceGeneratorWithAdditionalFiles : IIncrementalGenerator
 
             // var className = line.Trim();
             string fileName = Path.GetFileNameWithoutExtension(file.Path);
-            string source;
 
-            if (fileName is "Common")
-            {
-                // Build up the source code.
-                source = GenerateSource(lines);
-            }
-            else
-            {
-                source = GenerateCpuConst(lines);
-            }
-            
+            string source = fileName is "Common" ? GenerateSource(lines) : GenerateCpuConst(lines);
+
             // Add the source code to the compilation.
             context.AddSource($"{fileName}.g.cs", source);
         }
@@ -102,6 +92,23 @@ public class SourceGeneratorWithAdditionalFiles : IIncrementalGenerator
                     }
                     
                     enums[archTypeName].Add(regName);
+                }
+                
+                if (segments[1] is "INS")
+                {
+                    string archName = CultureInfo.InvariantCulture.TextInfo.ToTitleCase(segments[0].ToLower());
+                    string archTypeName = $"Instruction{archName}";
+                    
+                    enums.TryAdd(archTypeName, new List<string>());
+                    
+                    string insName = "";
+                    
+                    foreach (string segment in segments[2..])
+                    {
+                        insName += CultureInfo.InvariantCulture.TextInfo.ToTitleCase(segment.ToLower());
+                    }
+                    
+                    enums[archTypeName].Add(insName);
                 }
             }
         }
@@ -263,14 +270,14 @@ public class SourceGeneratorWithAdditionalFiles : IIncrementalGenerator
                 {
                     enums.TryAdd("UcCtlIoType", new List<string>());
                     
-                    string ctlio = "";
+                    string ctlIo = "";
                     
                     foreach (string segment in segments[2..])
                     {
-                        ctlio += CultureInfo.InvariantCulture.TextInfo.ToTitleCase(segment.ToLower());
+                        ctlIo += CultureInfo.InvariantCulture.TextInfo.ToTitleCase(segment.ToLower());
                     }
                     
-                    enums["UcCtlIoType"].Add(ctlio);
+                    enums["UcCtlIoType"].Add(ctlIo);
                 }
                 else if (segments[0] is "TLB")
                 {
@@ -284,6 +291,19 @@ public class SourceGeneratorWithAdditionalFiles : IIncrementalGenerator
                     }
                     
                     enums["UcTlbType"].Add(tlb);
+                }
+                else if (segments.Length > 2 && segments[0] is "CTL" && segments[1] is "CONTEXT" &&  !segments[2].Contains("MODE"))
+                {
+                    enums.TryAdd("UcControlContentType", new List<string>());
+                    
+                    string ctl = "";
+                    
+                    foreach (string segment in segments[1..])
+                    {
+                        ctl += CultureInfo.InvariantCulture.TextInfo.ToTitleCase(segment.ToLower());
+                    }
+                    
+                    enums["UcControlContentType"].Add(ctl);
                 }
                 else if (segments[0] is "CTL")
                 {
@@ -318,7 +338,12 @@ public class SourceGeneratorWithAdditionalFiles : IIncrementalGenerator
         
         foreach (KeyValuePair<string, List<string>> e in enums)
         {
-            builder.AppendLine($"public enum {e.Key}");
+            if (e.Key.Contains("UcMode") || e.Key.Contains("UcProtection") || e.Key.Contains("UcHookType") || e.Key.Contains("UcCtlIoType") || e.Key.Contains("UcControlContentType"))
+            {
+                builder.AppendLine("[Flags]");
+            }
+            
+            builder.AppendLine($"public enum {e.Key} : uint");
             builder.AppendLine("{");
             foreach (string line in e.Value)
             {

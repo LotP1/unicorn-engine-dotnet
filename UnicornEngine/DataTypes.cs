@@ -1,23 +1,34 @@
-﻿using UnicornEngine.Const;
+﻿#pragma warning disable CS0169 // Field is never used
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+using UnicornEngine.Const;
 
 namespace UnicornEngine;
 
-struct TlbEntry
+public struct TlbEntry
 {
     public ulong PAddr;
     public UcProtection Perms;
 }
 
-struct TranslationBlock
+public struct TranslationBlock
 {
     public nint Pc;
-    public short ICount;
+    public short InstructionCount;
     public short Size;
 }
 
-struct MemRegion
+public struct MemRegion
 {
-    nint Begin;
-    nint End;
-    UcProtection Perms;
+    public nint Begin;
+    public nint End;
+    public UcProtection Perms;
 }
+
+public struct ContextObj
+{
+    private nint _context;
+
+    public bool IsAllocated() => _context != 0;
+}
+#pragma warning restore CS0169 // Field is never used
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
