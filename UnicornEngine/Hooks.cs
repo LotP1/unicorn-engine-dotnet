@@ -20,10 +20,10 @@ public class CodeHook : Hook
 
     private void Cb(nint engine, nint address, uint size, nint userData)
     {
-        Callback?.Invoke(engine, address, size, UserData);
+        Callback?.Invoke(address, size, UserData);
     }
 
-    public delegate void CallbackDelegate(nint engine, nint address, uint size, byte[] userData);
+    public delegate void CallbackDelegate(nint address, uint size, byte[] userData);
     internal delegate void InternalDelegate(nint engine, nint address, uint size, nint userData);
 }
 public class InterruptHook : Hook
@@ -38,10 +38,10 @@ public class InterruptHook : Hook
 
     private void Cb(nint engine, uint intNo, nint userData)
     {
-        Callback?.Invoke(engine, intNo, UserData);
+        Callback?.Invoke(intNo, UserData);
     }
 
-    public delegate void CallbackDelegate(nint engine, uint intNo, byte[] userData);
+    public delegate void CallbackDelegate(uint intNo, byte[] userData);
     internal delegate void InternalDelegate(nint engine, uint intNo, nint userData);
 }
 public class InvalidInstructionHook : Hook
@@ -56,10 +56,10 @@ public class InvalidInstructionHook : Hook
 
     private bool Cb(nint engine, nint userData)
     {
-        return Callback.Invoke(engine, UserData);
+        return Callback.Invoke(UserData);
     }
 
-    public delegate bool CallbackDelegate(nint engine, byte[] userData);
+    public delegate bool CallbackDelegate(byte[] userData);
     internal delegate bool InternalDelegate(nint engine, nint userData);
 }
 public class InHook : Hook
@@ -74,10 +74,10 @@ public class InHook : Hook
 
     private void Cb(nint engine, uint port, uint size, nint userData)
     {
-        Callback?.Invoke(engine, port, size, UserData);
+        Callback?.Invoke(port, size, UserData);
     }
 
-    public delegate void CallbackDelegate(nint engine, uint port, uint size, byte[] userData);
+    public delegate void CallbackDelegate(uint port, uint size, byte[] userData);
     internal delegate void InternalDelegate(nint engine, uint port, uint size, nint userData);
 }
 public class OutHook : Hook
@@ -92,10 +92,10 @@ public class OutHook : Hook
 
     private void Cb(nint engine, uint port, uint size, uint value, nint userData)
     {
-        Callback?.Invoke(engine, port, size, size, UserData);
+        Callback?.Invoke(port, size, size, UserData);
     }
 
-    public delegate void CallbackDelegate(nint engine, uint port, uint size, uint value, byte[] userData);
+    public delegate void CallbackDelegate(uint port, uint size, uint value, byte[] userData);
     internal delegate void InternalDelegate(nint engine, uint port, uint size, uint value, nint userData);
 }
 public class SyscallHook : Hook
@@ -110,10 +110,10 @@ public class SyscallHook : Hook
 
     private void Cb(nint engine, nint userData)
     {
-        Callback?.Invoke(engine, UserData);
+        Callback?.Invoke(UserData);
     }
 
-    public delegate void CallbackDelegate(nint engine, byte[] userData);
+    public delegate void CallbackDelegate(byte[] userData);
     internal delegate void InternalDelegate(nint engine, nint userData);
 }
 public class CpuIdHook : Hook
@@ -128,10 +128,10 @@ public class CpuIdHook : Hook
 
     private void Cb(nint engine, nint userData)
     {
-        Callback?.Invoke(engine, UserData);
+        Callback?.Invoke(UserData);
     }
 
-    public delegate void CallbackDelegate(nint engine, byte[] userData);
+    public delegate void CallbackDelegate(byte[] userData);
     internal delegate void InternalDelegate(nint engine, nint userData);
 }
 public class TlbHook : Hook
@@ -146,10 +146,10 @@ public class TlbHook : Hook
 
     private bool Cb(nint engine, nint vAddress, UcMemoryType memType, ref TlbEntry result, nint userData)
     {
-        return Callback.Invoke(engine, vAddress, memType, ref result, UserData);
+        return Callback.Invoke(vAddress, memType, ref result, UserData);
     }
 
-    public delegate bool CallbackDelegate(nint engine, nint vAddress, UcMemoryType memType, ref TlbEntry result, byte[] userData);
+    public delegate bool CallbackDelegate(nint vAddress, UcMemoryType memType, ref TlbEntry result, byte[] userData);
     internal delegate bool InternalDelegate(nint engine, nint vAddress, UcMemoryType memType, ref TlbEntry result, nint userData);
 }
 public class EdgeGenHook : Hook
@@ -164,10 +164,10 @@ public class EdgeGenHook : Hook
 
     private void Cb(nint engine, ref TranslationBlock currentTranslationBlock, ref TranslationBlock prevTranslationBlock, nint userData)
     {
-        Callback?.Invoke(engine, ref currentTranslationBlock, ref prevTranslationBlock, UserData);
+        Callback?.Invoke(ref currentTranslationBlock, ref prevTranslationBlock, UserData);
     }
 
-    public delegate void CallbackDelegate(nint engine, ref TranslationBlock currentTranslationBlock, ref TranslationBlock prevTranslationBlock, byte[] userData);
+    public delegate void CallbackDelegate(ref TranslationBlock currentTranslationBlock, ref TranslationBlock prevTranslationBlock, byte[] userData);
     internal delegate void InternalDelegate(nint engine, ref TranslationBlock currentTranslationBlock, ref TranslationBlock prevTranslationBlock, nint userData);
 }
 public class TcgOp2Hook : Hook
@@ -182,10 +182,10 @@ public class TcgOp2Hook : Hook
 
     private void Cb(nint engine, nint address, ulong arg1, ulong arg2, uint size, nint userData)
     {
-        Callback?.Invoke(engine, address, arg1, arg2, size, UserData);
+        Callback?.Invoke(address, arg1, arg2, size, UserData);
     }
 
-    public delegate void CallbackDelegate(nint engine, nint address, ulong arg1, ulong arg2, uint size, byte[] userData);
+    public delegate void CallbackDelegate(nint address, ulong arg1, ulong arg2, uint size, byte[] userData);
     internal delegate void InternalDelegate(nint engine, nint address, ulong arg1, ulong arg2, uint size, nint userData);
 }
 public class MmioReadHook : Hook
@@ -200,10 +200,10 @@ public class MmioReadHook : Hook
 
     private ulong Cb(nint engine, ulong offset, uint size, nint userData)
     {
-        return Callback.Invoke(engine, offset, size, UserData);
+        return Callback.Invoke(offset, size, UserData);
     }
 
-    public delegate ulong CallbackDelegate(nint engine, ulong offset, uint size, byte[] userData);
+    public delegate ulong CallbackDelegate(ulong offset, uint size, byte[] userData);
     internal delegate ulong InternalDelegate(nint engine, ulong offset, uint size, nint userData);
 }
 
@@ -219,10 +219,10 @@ public class MmioWriteHook : Hook
 
     private void Cb(nint engine, ulong offset, uint size, ulong value, nint userData)
     {
-        Callback?.Invoke(engine, offset, size, value, UserData);
+        Callback?.Invoke(offset, size, value, UserData);
     }
 
-    public delegate void CallbackDelegate(nint engine, ulong offset, uint size, ulong value, byte[] userData);
+    public delegate void CallbackDelegate(ulong offset, uint size, ulong value, byte[] userData);
     internal delegate void InternalDelegate(nint engine, ulong offset, uint size, ulong value, nint userData);
 }
 public class MemHook : Hook
@@ -237,10 +237,10 @@ public class MemHook : Hook
 
     private void Cb(nint engine, UcMemoryType memType, nint address, uint size, ulong value, nint userData)
     {
-        Callback?.Invoke(engine, memType, address, size, value, UserData);
+        Callback?.Invoke(memType, address, size, value, UserData);
     }
 
-    public delegate void CallbackDelegate(nint engine, UcMemoryType memType, nint address, uint size, ulong value, byte[] userData);
+    public delegate void CallbackDelegate(UcMemoryType memType, nint address, uint size, ulong value, byte[] userData);
     internal delegate void InternalDelegate(nint engine, UcMemoryType memType, nint address, uint size, ulong value, nint userData);
 }
 public class InvalidMemHook : Hook
@@ -255,9 +255,9 @@ public class InvalidMemHook : Hook
 
     private void Cb(nint engine, UcMemoryType memType, nint address, uint size, ulong value, nint userData)
     {
-        Callback?.Invoke(engine, memType, address, size, value, UserData);
+        Callback?.Invoke(memType, address, size, value, UserData);
     }
 
-    public delegate void CallbackDelegate(nint engine, UcMemoryType memType, nint address, uint size, ulong value, byte[] userData);
+    public delegate void CallbackDelegate(UcMemoryType memType, nint address, uint size, ulong value, byte[] userData);
     internal delegate void InternalDelegate(nint engine, UcMemoryType memType, nint address, uint size, ulong value, nint userData);
 }
