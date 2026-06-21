@@ -30,5 +30,17 @@ public struct ContextObj
 
     public bool IsAllocated() => _context != 0;
 }
+
+public struct ArmCpRegister
+{
+    public uint Cp;
+    public uint Is64Bit;
+    public uint Sec;
+    public uint Crn;
+    public uint Crm;
+    public uint Opc1;
+    public uint Opc2;
+    public ulong Val;
+}
 #pragma warning restore CS0169 // Field is never used
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value

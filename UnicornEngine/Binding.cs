@@ -4,7 +4,7 @@ using UnicornEngine.Const;
 
 namespace UnicornEngine;
 
-public static class Bindings
+public static unsafe class Bindings
 {
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_version")]
     internal static extern uint Version(ref uint major, ref uint minor);
@@ -34,39 +34,44 @@ public static class Bindings
     internal static extern UcError ErroNo(nint engine);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_strerror")]
-    internal static extern string StrError(UcError code);
+    internal static extern sbyte* StrError(UcError code);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_reg_write")]
-    internal static extern UcError RegWrite(nint engine, uint regId, ref ulong value);
+    internal static extern UcError RegWrite(nint engine, uint regId, byte* value);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_reg_read")]
-    internal static extern UcError RegRead(nint engine, uint regId, ref ulong value);
+    internal static extern UcError RegRead(nint engine, uint regId, byte* value);
+
+    [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_reg_write")]
+    internal static extern UcError RegWriteCpReg(nint engine, RegArm regId, ArmCpRegister* value);
+
+    [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_reg_read")]
+    internal static extern UcError RegReadCpReg(nint engine, RegArm regId, ArmCpRegister* value);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_reg_write_batch")]
-    internal static extern UcError RegWriteBatch(nint engine, Span<uint> regIds, Span<ulong> values, int count);
+    internal static extern UcError RegWriteBatch(nint engine, uint* regIds, byte** values, int count);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_reg_read_batch")]
-    internal static extern UcError RegReadBatch(nint engine, Span<uint> regIds, ref Span<ulong> values, int count);
+    internal static extern UcError RegReadBatch(nint engine, uint* regIds, byte** values, int count);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_mem_write")]
-    internal static extern UcError MemWrite(nint engine, nint address, Span<byte> bytes, ulong size);
+    internal static extern UcError MemWrite(nint engine, nint address, byte* bytes, ulong size);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_mem_read")]
-    internal static extern UcError MemRead(nint engine, nint address, Span<byte> bytes, ulong size);
+    internal static extern UcError MemRead(nint engine, nint address, byte* bytes, ulong size);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_vmem_read")]
-    internal static extern UcError VMemRead(nint engine, nint address, UcProtection prot, Span<byte> bytes, ulong size);
+    internal static extern UcError VMemRead(nint engine, nint address, UcProtection prot, byte* bytes, ulong size);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_vmem_write")]
-    internal static extern UcError VMemWrite(nint engine, nint address, UcProtection prot, Span<byte> bytes,
+    internal static extern UcError VMemWrite(nint engine, nint address, UcProtection prot, byte* bytes,
         ulong size);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_vmem_translate")]
     internal static extern UcError VMemTranslate(nint engine, nint address, UcProtection prot, ref nint pAddress);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_emu_start")]
-    internal static extern UcError EmuStart(nint engine, nint beginAddress, nint untilAddress, ulong timeout,
-        ulong count);
+    internal static extern UcError EmuStart(nint engine, nint beginAddress, nint untilAddress, ulong timeout, ulong count);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_emu_stop")]
     internal static extern UcError EmuStop(nint engine);
@@ -125,44 +130,30 @@ public static class Bindings
     internal static extern UcError MemProtect(nint engine, nint address, ulong size, UcProtection perms);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_mem_regions")]
-    internal static extern UcError MemRegions(nint engine, ref Span<MemRegion> regions, ref uint count);
+    internal static extern UcError MemRegions(nint engine, MemRegion** regions, ref uint count);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_context_alloc")]
-    internal static extern UcError ContextAlloc(nint engine, ref ContextObj context);
+    internal static extern UcError ContextAlloc(nint engine, ContextObj* context);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_free")]
-    internal static extern UcError MemFree(ref MemRegion mem);
+    internal static extern UcError MemFree(MemRegion* mem);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_context_save")]
     internal static extern UcError ContextSave(nint engine, ContextObj context);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_context_reg_write")]
-    internal static extern UcError ContextRegWrite(ContextObj context, uint regId, ref ulong value);
+    internal static extern UcError ContextRegWrite(ContextObj context, uint regId, byte* value);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_context_reg_read")]
-    internal static extern UcError ContextRegRead(ContextObj context, uint regId, ref ulong value);
-
-    [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_context_reg_write2")]
-    internal static extern UcError ContextRegWrite2(ContextObj context, uint regId, Span<byte> value, ref ulong size);
-
-    [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_context_reg_read2")]
-    internal static extern UcError ContextRegRead2(ContextObj context, uint regId, Span<byte> value, ref ulong size);
+    internal static extern UcError ContextRegRead(ContextObj context, uint regId, byte* value);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_context_reg_write_batch")]
-    internal static extern UcError ContextRegWriteBatch(ContextObj context, Span<uint> regIds, ref Span<ulong> values,
+    internal static extern UcError ContextRegWriteBatch(ContextObj context, uint* regIds, byte** values,
         int count);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_context_reg_read_batch")]
-    internal static extern UcError ContextRegReadBatch(ContextObj context, Span<uint> regIds, ref Span<ulong> values,
+    internal static extern UcError ContextRegReadBatch(ContextObj context, uint* regIds, byte** values,
         int count);
-
-    [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_context_reg_write_batch2")]
-    internal static extern UcError ContextRegWriteBatch2(ContextObj context, Span<uint> regIds, ref Span<ulong> values,
-        Span<ulong> sizes, int count);
-
-    [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_context_reg_read_batch2")]
-    internal static extern UcError ContextRegReadBatch2(ContextObj context, Span<uint> regIds, ref Span<ulong> values,
-        Span<ulong> sizes, int count);
 
     [DllImport("unicorn", CallingConvention = CallingConvention.Cdecl, EntryPoint = "uc_context_restore")]
     internal static extern UcError ContextRestore(nint engine, ContextObj context);
