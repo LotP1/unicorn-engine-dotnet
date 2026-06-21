@@ -1,6 +1,11 @@
 # Unicorn Engine for .NET
 .NET binding/wrapper for the [Unicorn engine](https://github.com/unicorn-engine/unicorn).
 
+## Notes
+Due to the increased stack security included in .NET 9 it is necessary to add the
+`<CETCompat>false</CETCompat>`
+linker option to your proj file in .NET 9+ projects.
+
 ### Examples
 
 This is a sample of how to run the emulator in C# using unicorn-engine-dotnet.
