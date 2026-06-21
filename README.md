@@ -47,6 +47,12 @@ Mapping, unmapping, reading, writing and changing memory permissions.
 nint addr = 0x100000;
 // Getting memory regions.
 uc.MemRegions(out Span<MemRegion> regions);
+// Remember to dispose of the region objects afterwards
+for (int i = 0; i < regions.Length; i++)
+{
+    uc.MemFree(ref regions[i]);
+}
+
 // Getting memory page size.
 uc.GetPageSize(out uint pageSize)
 
